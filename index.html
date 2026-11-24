@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Percentage, Discount &amp; Final Grade Calculator | HorizonSet</title>
+  <meta name="description" content="Free instant math calculators: percentage calculator, percent change, shopping discount and tax calculator, split bill, and student final exam grade calculator.">
+  <style>
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+
+    body {
+      background: #070b14;
+      color: #e2e8f0;
+      margin: 0;
+      min-height: 100vh;
+      padding: 28px 16px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(85px);
+      opacity: 0.36;
+      z-index: 0;
+      pointer-events: none;
+      will-change: transform;
+      animation: floatOrb 16s ease-in-out infinite alternate;
+    }
+    .orb-1 { width: 340px; height: 340px; background: #0ea5e9; top: -90px; left: -90px; }
+    .orb-2 { width: 320px; height: 320px; background: #8b5cf6; bottom: -70px; right: -70px; animation-delay: -8s; }
+    @keyframes floatOrb {
+      0% { transform: translate3d(0, 0, 0) scale(1); }
+      100% { transform: translate3d(35px, 25px, 0) scale(1.08); }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 840px;
+      background: rgba(17, 24, 39, 0.76);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      padding: 26px;
+      border-radius: 20px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+      animation: fadeUp 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translate3d(0, 14px, 0); }
+      to { opacity: 1; transform: translate3d(0, 0, 0); }
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #7dd3fc;
+      background: rgba(14, 165, 233, 0.16);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 5px 12px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+    .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: #34d399; box-shadow: 0 0 8px #34d399; }
+
+    h1 {
+      margin: 0 0 5px;
+      font-size: 25px;
+      font-weight: 750;
+      letter-spacing: -0.02em;
+      background: linear-gradient(90deg, #f8fafc, #7dd3fc, #c4b5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p.sub { margin: 0 0 18px; font-size: 14px; color: #94a3b8; }
+
+    /* Tabs */
+    .tabs {
+      display: inline-flex;
+      flex-wrap: wrap;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 18px;
+      gap: 4px;
+    }
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      padding: 8px 15px;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    .tab-btn:hover { color: #e2e8f0; background: rgba(255, 255, 255, 0.04); }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #0284c7, #6366f1);
+      color: #ffffff;
+      box-shadow: 0 3px 12px rgba(2, 132, 199, 0.35);
+    }
+
+    .panel { display: none; animation: panelIn 0.22s ease; }
+    .panel.active { display: block; }
+    @keyframes panelIn {
+      from { opacity: 0; transform: translate3d(0, 6px, 0); }
+      to { opacity: 1; transform: translate3d(0, 0, 0); }
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+    .calc-card {
+      background: rgba(15, 23, 42, 0.68);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 14px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .calc-title { font-size: 13.5px; font-weight: 700; color: #e2e8f0; }
+
+    .inline-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 13.5px;
+      color: #cbd5e1;
+    }
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .field { display: flex; flex-direction: column; gap: 4px; }
+    .field label { font-size: 11.5px; color: #94a3b8; font-weight: 600; }
+
+    input[type="number"] {
+      width: 90px;
+      background: rgba(9, 13, 24, 0.88);
+      color: #f8fafc;
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      border-radius: 9px;
+      padding: 8px 10px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    .stack-grid input[type="number"] { width: 100%; }
+    input[type="number"]:focus { border-color: #38bdf8; }
+
+    .result-box {
+      background: rgba(9, 13, 24, 0.72);
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .res-label { font-size: 12px; color: #94a3b8; }
+    .res-val { font-size: 19px; font-weight: 800; color: #38bdf8; }
+    .res-val.good { color: #34d399; }
+    .res-val.warn { color: #fbbf24; }
+    .hint { font-size: 12px; color: #94a3b8; line-height: 1.4; }
+
+    @media (max-width: 700px) {
+      .cards-grid, .stack-grid { grid-template-columns: 1fr; }
+      .container { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+
+  <div class="container">
+    <div class="badge"><span class="badge-dot"></span> HorizonSet &bull; Instant Everyday Math</div>
+    <h1>Percentage, Discount &amp; Grade Calculator</h1>
+    <p class="sub">Instant live answers as you type—no submit buttons, no popups, and zero clutter.</p>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('pct', this)">Percentages &amp; Split</button>
+      <button class="tab-btn" onclick="switchTab('disc', this)">Discount &amp; Tax</button>
+      <button class="tab-btn" onclick="switchTab('grade', this)">Student Grades</button>
+    </div>
+
+    <!-- Tab 1: Percentages -->
+    <div class="panel active" id="panel-pct">
+      <div class="cards-grid">
+        <div class="calc-card">
+          <div class="calc-title">1. Percentage of a Number</div>
+          <div class="inline-row">
+            <span>What is</span>
+            <input type="number" id="p1a" value="20">
+            <span>% of</span>
+            <input type="number" id="p1b" value="150">
+            <span>?</span>
+          </div>
+          <div class="result-box">
+            <span class="res-label">Answer</span>
+            <span class="res-val" id="r1">30</span>
+          </div>
+        </div>
+
+        <div class="calc-card">
+          <div class="calc-title">2. Find the Percentage</div>
+          <div class="inline-row">
+            <input type="number" id="p2a" value="45">
+            <span>is what % of</span>
+            <input type="number" id="p2b" value="60">
+            <span>?</span>
+          </div>
+          <div class="result-box">
+            <span class="res-label">Answer</span>
+            <span class="res-val" id="r2">75%</span>
+          </div>
+        </div>
+
+        <div class="calc-card">
+          <div class="calc-title">3. Percentage Change</div>
+          <div class="inline-row">
+            <span>From</span>
+            <input type="number" id="p3a" value="100">
+            <span>to</span>
+            <input type="number" id="p3b" value="125">
+          </div>
+          <div class="result-box">
+            <span class="res-label" id="r3Label">Change</span>
+            <span class="res-val good" id="r3">+25%</span>
+          </div>
+        </div>
+
+        <div class="calc-card">
+          <div class="calc-title">4. Tip &amp; Split Bill</div>
+          <div class="stack-grid">
+            <div class="field"><label>Bill</label><input type="number" id="bill" value="80" min="0"></div>
+            <div class="field"><label>Tip %</label><input type="number" id="tip" value="15" min="0"></div>
+            <div class="field"><label>People</label><input type="number" id="people" value="4" min="1"></div>
+          </div>
+          <div class="result-box">
+            <span class="res-label" id="billTotal">Total: 92.00</span>
+            <span class="res-val" id="billEach">23.00 / each</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 2: Discount & Tax -->
+    <div class="panel" id="panel-disc">
+      <div class="cards-grid">
+        <div class="calc-card">
+          <div class="calc-title">Sale Price Calculator</div>
+          <div class="stack-grid">
+            <div class="field"><label>Original Price</label><input type="number" id="dPrice" value="120" min="0"></div>
+            <div class="field"><label>Discount %</label><input type="number" id="dOff" value="25" min="0" max="100"></div>
+            <div class="field"><label>Tax % (opt.)</label><input type="number" id="dTax" value="0" min="0"></div>
+          </div>
+          <div class="result-box">
+            <span class="res-label">Final Price</span>
+            <span class="res-val good" id="dFinal">90.00</span>
+          </div>
+        </div>
+
+        <div class="calc-card">
+          <div class="calc-title">Breakdown</div>
+          <div class="result-box">
+            <span class="res-label">You Save (Discount)</span>
+            <span class="res-val good" id="dSaved">30.00</span>
+          </div>
+          <div class="result-box">
+            <span class="res-label">Tax Added</span>
+            <span class="res-val" id="dTaxAmt">0.00</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: Student Grades -->
+    <div class="panel" id="panel-grade">
+      <div class="cards-grid">
+        <div class="calc-card">
+          <div class="calc-title">Final Exam Grade Needed</div>
+          <div class="stack-grid">
+            <div class="field"><label>Current %</label><input type="number" id="gCurr" value="84"></div>
+            <div class="field"><label>Final Weight %</label><input type="number" id="gWeight" value="25" min="1" max="100"></div>
+            <div class="field"><label>Goal %</label><input type="number" id="gGoal" value="90"></div>
+          </div>
+          <div class="result-box">
+            <span class="res-label">Score Needed on Final</span>
+            <span class="res-val" id="gNeeded">108%</span>
+          </div>
+          <div class="hint" id="gHint">Enter your current average and final exam weight.</div>
+        </div>
+
+        <div class="calc-card">
+          <div class="calc-title">Quick Quiz / Test Score</div>
+          <div class="inline-row">
+            <span>Correct:</span>
+            <input type="number" id="qGot" value="42" min="0">
+            <span>out of</span>
+            <input type="number" id="qTot" value="50" min="1">
+          </div>
+          <div class="result-box">
+            <span class="res-label">Score &amp; Grade</span>
+            <span class="res-val good" id="qRes">84% (B)</span>
+          </div>
+          <div class="hint" id="qWrong">8 incorrect answers</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tab, btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('panel-' + tab).classList.add('active');
+    }
+
+    function fmtNum(n) {
+      if (!isFinite(n)) return '—';
+      return Number(n.toFixed(4)).toString();
+    }
+
+    function val(id) { return parseFloat(document.getElementById(id).value); }
+
+    function calcAll() {
+      // 1. X% of Y
+      const p1a = val('p1a'), p1b = val('p1b');
+      document.getElementById('r1').textContent = (!isNaN(p1a) && !isNaN(p1b)) ? fmtNum((p1a / 100) * p1b) : '—';
+
+      // 2. X is what % of Y
+      const p2a = val('p2a'), p2b = val('p2b');
+      document.getElementById('r2').textContent = (!isNaN(p2a) && !isNaN(p2b) && p2b !== 0) ? fmtNum((p2a / p2b) * 100) + '%' : '—';
+
+      // 3. % Change
+      const p3a = val('p3a'), p3b = val('p3b');
+      const r3 = document.getElementById('r3');
+      const r3L = document.getElementById('r3Label');
+      if (!isNaN(p3a) && !isNaN(p3b) && p3a !== 0) {
+        const diff = ((p3b - p3a) / Math.abs(p3a)) * 100;
+        const sign = diff > 0 ? '+' : '';
+        r3.textContent = sign + fmtNum(diff) + '%';
+        r3.className = 'res-val ' + (diff >= 0 ? 'good' : 'warn');
+        r3L.textContent = diff > 0 ? 'Increase' : (diff < 0 ? 'Decrease' : 'No change');
+      } else {
+        r3.textContent = '—';
+        r3L.textContent = 'Change';
+      }
+
+      // 4. Tip & Split
+      const bill = Math.max(0, val('bill') || 0);
+      const tip = Math.max(0, val('tip') || 0);
+      const ppl = Math.max(1, Math.floor(val('people') || 1));
+      const total = bill * (1 + tip / 100);
+      document.getElementById('billTotal').textContent = 'Total: ' + total.toFixed(2);
+      document.getElementById('billEach').textContent = (total / ppl).toFixed(2) + ' / each';
+
+      // Discount & Tax
+      const price = Math.max(0, val('dPrice') || 0);
+      const off = Math.min(100, Math.max(0, val('dOff') || 0));
+      const tax = Math.max(0, val('dTax') || 0);
+      const saved = price * (off / 100);
+      const afterDisc = price - saved;
+      const taxAmt = afterDisc * (tax / 100);
+      document.getElementById('dSaved').textContent = saved.toFixed(2);
+      document.getElementById('dTaxAmt').textContent = taxAmt.toFixed(2);
+      document.getElementById('dFinal').textContent = (afterDisc + taxAmt).toFixed(2);
+
+      // Final Exam Grade Needed
+      const gCurr = val('gCurr'), gWeight = val('gWeight'), gGoal = val('gGoal');
+      const gNeeded = document.getElementById('gNeeded');
+      const gHint = document.getElementById('gHint');
+      if (!isNaN(gCurr) && !isNaN(gWeight) && !isNaN(gGoal) && gWeight > 0 && gWeight <= 100) {
+        const w = gWeight / 100;
+        const need = (gGoal - gCurr * (1 - w)) / w;
+        gNeeded.textContent = fmtNum(need) + '%';
+        if (need <= 0) {
+          gNeeded.className = 'res-val good';
+          gHint.textContent = 'You already locked in your goal grade!';
+        } else if (need > 100) {
+          gNeeded.className = 'res-val warn';
+          gHint.textContent = 'Over 100% needed — would require extra credit.';
+        } else {
+          gNeeded.className = 'res-val';
+          gHint.textContent = 'You need ' + fmtNum(need) + '% on the final exam to finish with ' + gGoal + '%.';
+        }
+      } else {
+        gNeeded.textContent = '—';
+        gHint.textContent = 'Final weight must be between 1% and 100%.';
+      }
+
+      // Quick Quiz Score
+      const qGot = val('qGot'), qTot = val('qTot');
+      if (!isNaN(qGot) && !isNaN(qTot) && qTot > 0) {
+        const pct = (qGot / qTot) * 100;
+        let letter = 'F';
+        if (pct >= 90) letter = 'A';
+        else if (pct >= 80) letter = 'B';
+        else if (pct >= 70) letter = 'C';
+        else if (pct >= 60) letter = 'D';
+        document.getElementById('qRes').textContent = fmtNum(pct) + '% (' + letter + ')';
+        const wrong = qTot - qGot;
+        document.getElementById('qWrong').textContent = wrong >= 0
+          ? fmtNum(wrong) + ' incorrect'
+          : 'Includes ' + fmtNum(Math.abs(wrong)) + ' bonus points';
+      } else {
+        document.getElementById('qRes').textContent = '—';
+        document.getElementById('qWrong').textContent = 'Enter total questions > 0';
+      }
+    }
+
+    document.querySelectorAll('input').forEach(inp => inp.addEventListener('input', calcAll));
+    calcAll();
+  </script>
+</body>
+</html>
